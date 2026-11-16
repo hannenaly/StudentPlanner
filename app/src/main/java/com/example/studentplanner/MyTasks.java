@@ -243,6 +243,7 @@ public class MyTasks extends AppCompatActivity {
             );
 
             loadTasks();
+            //test(3ashan el dr)
             scheduleReminder(
                     "Test Notification",
                     System.currentTimeMillis() + 60 * 1000L,
