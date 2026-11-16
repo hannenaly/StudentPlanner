@@ -1,7 +1,12 @@
+
 package com.example.studentplanner;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -9,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import android.content.SharedPreferences;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,6 +27,13 @@ public class MySubjects extends AppCompatActivity {
     Button btnAddSubject, btnBackHome;
     SharedPreferences Preferences;
     LinearLayout subjectsContainer;
+
+    int[] cardColors = {
+            0xFFEAF0FC,
+            0xFFE8F8F5,
+            0xFFFFF6DF,
+            0xFFF7EDFC
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +52,7 @@ public class MySubjects extends AppCompatActivity {
         subjectsContainer = findViewById(R.id.subjectsContainer);
 
         Preferences = getSharedPreferences("MySubjects", MODE_PRIVATE);
+
         loadSubjects();
 
         btnAddSubject.setOnClickListener(v -> addSubject());
@@ -109,38 +121,130 @@ public class MySubjects extends AppCompatActivity {
         Toast.makeText(this, "Subject Added Successfully",
                 Toast.LENGTH_SHORT).show();
     }
+
     private void addSubjectCard(String subjectName,
                                 String doctorName,
                                 String creditHours,
                                 String section,
                                 String room) {
 
-        TextView subjectCard = new TextView(this);
+        LinearLayout card = new LinearLayout(this);
+        card.setOrientation(LinearLayout.HORIZONTAL);
+        card.setGravity(Gravity.CENTER_VERTICAL);
+        card.setPadding(dp(16), dp(16), dp(16), dp(16));
 
-        subjectCard.setText(
-                subjectName +
-                        "\nDoctor: " + doctorName +
-                        "\nCredit Hours: " + creditHours +
-                        "\nTap to view details"
-        );
+        card.setBackground(createBackground(
+                cardColors[subjectsContainer.getChildCount() % cardColors.length],
+                20
+        ));
 
-        subjectCard.setTextSize(16);
-        subjectCard.setTextColor(0xFFFFFFFF);
-        subjectCard.setPadding(24, 24, 24, 24);
+        card.setElevation(dp(3));
 
-        subjectCard.setBackgroundResource(R.drawable.subjectcard);
-
-        LinearLayout.LayoutParams params =
+        LinearLayout.LayoutParams cardParams =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 );
 
-        params.setMargins(0, 0, 0, 16);
+        cardParams.setMargins(0, 0, 0, dp(14));
+        card.setLayoutParams(cardParams);
 
-        subjectCard.setLayoutParams(params);
+        // Subject icon
 
-        subjectCard.setOnClickListener(v -> {
+        TextView icon = new TextView(this);
+        icon.setText("📚");
+        icon.setTextSize(25);
+        icon.setGravity(Gravity.CENTER);
+
+        icon.setBackground(createBackground(
+                Color.WHITE, 14
+        ));
+
+        LinearLayout.LayoutParams iconParams =
+                new LinearLayout.LayoutParams(
+                        dp(55), dp(55)
+                );
+
+        iconParams.setMargins(0, 0, dp(14), 0);
+        icon.setLayoutParams(iconParams);
+
+        card.addView(icon);
+
+        // Subject information
+
+        LinearLayout details = new LinearLayout(this);
+        details.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout.LayoutParams detailsParams =
+                new LinearLayout.LayoutParams(
+                        0,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        1
+                );
+
+        details.setLayoutParams(detailsParams);
+
+        TextView name = new TextView(this);
+        name.setText(subjectName);
+        name.setTextSize(18);
+        name.setTextColor(Color.rgb(23, 54, 93));
+        name.setTypeface(null, android.graphics.Typeface.BOLD);
+
+        details.addView(name);
+
+        TextView doctor = new TextView(this);
+        doctor.setText("Doctor: " + doctorName);
+        doctor.setTextSize(14);
+        doctor.setTextColor(Color.rgb(90, 90, 90));
+
+        LinearLayout.LayoutParams doctorParams =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+
+        doctorParams.topMargin = dp(5);
+        doctor.setLayoutParams(doctorParams);
+
+        details.addView(doctor);
+
+        TextView hours = new TextView(this);
+        hours.setText("Credit Hours: " + creditHours);
+        hours.setTextSize(14);
+        hours.setTextColor(Color.rgb(90, 90, 90));
+
+        details.addView(hours);
+
+        TextView sectionRoom = new TextView(this);
+        sectionRoom.setText(
+                "Section: " + section + "   |   Room: " + room
+        );
+        sectionRoom.setTextSize(13);
+        sectionRoom.setTextColor(Color.rgb(100, 100, 100));
+
+        details.addView(sectionRoom);
+
+        TextView tap = new TextView(this);
+        tap.setText("Tap to view details  →");
+        tap.setTextSize(12);
+        tap.setTextColor(Color.rgb(23, 54, 93));
+
+        LinearLayout.LayoutParams tapParams =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+
+        tapParams.topMargin = dp(7);
+        tap.setLayoutParams(tapParams);
+
+        details.addView(tap);
+
+        card.addView(details);
+
+        // Open Subject Details
+
+        card.setOnClickListener(v -> {
 
             Intent intent = new Intent(
                     MySubjects.this,
@@ -156,9 +260,12 @@ public class MySubjects extends AppCompatActivity {
             startActivity(intent);
         });
 
-        subjectsContainer.addView(subjectCard);
+        subjectsContainer.addView(card);
     }
+
     private void loadSubjects() {
+
+        subjectsContainer.removeAllViews();
 
         try {
             String saved = Preferences.getString("subjects", "[]");
@@ -182,5 +289,19 @@ public class MySubjects extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private GradientDrawable createBackground(int color, int radius) {
+
+        GradientDrawable drawable = new GradientDrawable();
+        drawable.setColor(color);
+        drawable.setCornerRadius(dp(radius));
+
+        return drawable;
+    }
+
+    private int dp(int value) {
+        return (int) (value * getResources()
+                .getDisplayMetrics().density);
     }
 }

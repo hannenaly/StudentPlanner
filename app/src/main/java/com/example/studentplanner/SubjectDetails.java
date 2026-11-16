@@ -12,7 +12,7 @@ public class SubjectDetails extends AppCompatActivity {
     TextView tvSubjectName, tvDoctorName;
     TextView tvCreditHours, tvSection, tvRoom;
 
-    Button  btnBack;
+    Button btnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +34,10 @@ public class SubjectDetails extends AppCompatActivity {
         String room = getIntent().getStringExtra("room");
 
         tvSubjectName.setText(subjectName);
-        tvDoctorName.setText("Doctor: " + doctorName);
-        tvCreditHours.setText("Credit Hours: " + creditHours);
-        tvSection.setText("Section: " + section);
-        tvRoom.setText("Room: " + room);
+        tvDoctorName.setText("👨‍🏫 Doctor: " + doctorName);
+        tvCreditHours.setText("⏰ Credit Hours: " + creditHours);
+        tvSection.setText("📖 Section: " + section);
+        tvRoom.setText("📍 Room: " + room);
 
         btnBack.setOnClickListener(v -> finish());
     }
