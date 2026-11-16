@@ -1,8 +1,8 @@
-
-
 package com.example.studentplanner;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -13,11 +13,13 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +41,8 @@ public class MyTasks extends AppCompatActivity {
     LinearLayout tasksContainer;
     SharedPreferences Preferences;
 
+    Spinner spReminder;
+
     String selectedDate = "";
     String selectedStartTime = "";
     String selectedEndTime = "";
@@ -47,6 +51,8 @@ public class MyTasks extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+        NotificationHelper.createChannel(this);
+
 
         etTaskName = findViewById(R.id.etTaskName);
         etDuration = findViewById(R.id.etDuration);
@@ -57,6 +63,12 @@ public class MyTasks extends AppCompatActivity {
         btnEndTime = findViewById(R.id.btnEndTime);
         rgPriority = findViewById(R.id.rgPriority);
         tasksContainer = findViewById(R.id.tasksContainer);
+        spReminder = findViewById(R.id.spReminder);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.reminder_options, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spReminder.setAdapter(adapter);
+
 
         Preferences = getSharedPreferences("MyTasks", MODE_PRIVATE);
 
@@ -214,12 +226,21 @@ public class MyTasks extends AppCompatActivity {
             task.put("priority", priority);
             task.put("startTime", selectedStartTime);
             task.put("endTime", selectedEndTime);
+            task.put("reminderOption", spReminder.getSelectedItemPosition());
+
 
             tasks.put(task);
 
             Preferences.edit()
                     .putString("tasks", tasks.toString())
                     .apply();
+            long dueDateMillis = convertDateToMillis(date);
+
+            scheduleReminder(
+                    name,
+                    dueDateMillis,
+                    spReminder.getSelectedItemPosition()
+            );
 
             loadTasks();
 
@@ -431,5 +452,61 @@ public class MyTasks extends AppCompatActivity {
     private int dp(int value) {
         return (int) (value * getResources()
                 .getDisplayMetrics().density);
+    }
+    private void scheduleReminder(String taskName, long dueDateMillis, int reminderOption) {
+
+        long reminderTime = dueDateMillis;
+
+        switch (reminderOption) {
+            case 1:
+                reminderTime -= 60 * 60 * 1000L;
+                break;
+            case 2:
+                reminderTime -= 3 * 60 * 60 * 1000L;
+                break;
+            case 3:
+                reminderTime -= 24 * 60 * 60 * 1000L;
+                break;
+            case 4:
+                reminderTime -= 2 * 24 * 60 * 60 * 1000L;
+                break;
+        }
+
+        if (reminderTime <= System.currentTimeMillis()) {
+            return;
+        }
+
+        Intent intent = new Intent(this, TaskReminderreceiver.class);
+        intent.putExtra("taskName", taskName);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                (int) (dueDateMillis % Integer.MAX_VALUE),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        if (alarmManager != null) {
+            alarmManager.setAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    reminderTime,
+                    pendingIntent
+            );
+        }
+    }
+    private long convertDateToMillis(String date) {
+        String[] parts = date.split("/");
+
+        int day = Integer.parseInt(parts[0]);
+        int month = Integer.parseInt(parts[1]) - 1;
+        int year = Integer.parseInt(parts[2]);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day, 9, 0, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return calendar.getTimeInMillis();
     }
 }

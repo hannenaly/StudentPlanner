@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">student planner</string>
+    <string-array name="reminder_options">
+        <item>2 hours before</item>
+        <item>3 hours before</item>
+        <item>1 hour before</item>
+        <item>2 days before</item>
+        <item>1 day before</item>
+    </string-array>
 </resources>
