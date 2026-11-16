@@ -1,10 +1,16 @@
+
+
 package com.example.studentplanner;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -22,16 +28,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 public class MyTasks extends AppCompatActivity {
 
     EditText etTaskName, etDuration;
     Button btnSelectDate, btnSaveTask, btnBackHome;
+    Button btnStartTime, btnEndTime;
     RadioGroup rgPriority;
     LinearLayout tasksContainer;
     SharedPreferences Preferences;
 
     String selectedDate = "";
+    String selectedStartTime = "";
+    String selectedEndTime = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,18 +53,24 @@ public class MyTasks extends AppCompatActivity {
         btnSelectDate = findViewById(R.id.btnSelectDate);
         btnSaveTask = findViewById(R.id.btnSaveTask);
         btnBackHome = findViewById(R.id.btnBackHome);
+        btnStartTime = findViewById(R.id.btnStartTime);
+        btnEndTime = findViewById(R.id.btnEndTime);
         rgPriority = findViewById(R.id.rgPriority);
         tasksContainer = findViewById(R.id.tasksContainer);
-        Preferences = getSharedPreferences("MyTasks", MODE_PRIVATE);
-        loadTasks();
 
+        Preferences = getSharedPreferences("MyTasks", MODE_PRIVATE);
+
+        loadTasks();
 
         btnSelectDate.setOnClickListener(v -> selectDate());
 
+        btnStartTime.setOnClickListener(v -> selectTime(true));
+
+        btnEndTime.setOnClickListener(v -> selectTime(false));
+
         btnSaveTask.setOnClickListener(v -> saveTask());
+
         etTaskName.requestFocus();
-
-
 
         etTaskName.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
@@ -106,10 +122,8 @@ public class MyTasks extends AppCompatActivity {
         });
     }
 
-
-
     private void selectDate() {
-;
+
         Calendar calendar = Calendar.getInstance();
 
         int year = calendar.get(Calendar.YEAR);
@@ -132,6 +146,40 @@ public class MyTasks extends AppCompatActivity {
         datePicker.show();
     }
 
+    private void selectTime(boolean isStartTime) {
+
+        Calendar calendar = Calendar.getInstance();
+
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+
+        TimePickerDialog timePicker = new TimePickerDialog(
+                this,
+                (view, selectedHour, selectedMinute) -> {
+
+                    String time = String.format(
+                            Locale.getDefault(),
+                            "%02d:%02d",
+                            selectedHour,
+                            selectedMinute
+                    );
+
+                    if (isStartTime) {
+                        selectedStartTime = time;
+                        btnStartTime.setText(time);
+                    } else {
+                        selectedEndTime = time;
+                        btnEndTime.setText(time);
+                    }
+                },
+                hour,
+                minute,
+                true
+        );
+
+        timePicker.show();
+    }
+
     private void saveTask() {
 
         String name = etTaskName.getText().toString().trim();
@@ -141,7 +189,9 @@ public class MyTasks extends AppCompatActivity {
         int selectedId = rgPriority.getCheckedRadioButtonId();
 
         if (name.isEmpty() || duration.isEmpty()
-                || date.isEmpty() || selectedId == -1) {
+                || date.isEmpty() || selectedId == -1
+                || selectedStartTime.isEmpty()
+                || selectedEndTime.isEmpty()) {
 
             Toast.makeText(this, "Please fill in all fields",
                     Toast.LENGTH_SHORT).show();
@@ -162,6 +212,8 @@ public class MyTasks extends AppCompatActivity {
             task.put("duration", duration);
             task.put("date", date);
             task.put("priority", priority);
+            task.put("startTime", selectedStartTime);
+            task.put("endTime", selectedEndTime);
 
             tasks.put(task);
 
@@ -169,7 +221,7 @@ public class MyTasks extends AppCompatActivity {
                     .putString("tasks", tasks.toString())
                     .apply();
 
-            addTaskCard(name, duration, date, priority);
+            loadTasks();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -178,8 +230,15 @@ public class MyTasks extends AppCompatActivity {
 
         etTaskName.setText("");
         etDuration.setText("");
+
         selectedDate = "";
+        selectedStartTime = "";
+        selectedEndTime = "";
+
         btnSelectDate.setText("Select Date");
+        btnStartTime.setText("Select Start Time");
+        btnEndTime.setText("Select End Time");
+
         rgPriority.check(R.id.rbMedium);
 
         Toast.makeText(this, "Task Added Successfully",
@@ -187,34 +246,136 @@ public class MyTasks extends AppCompatActivity {
     }
 
     private void addTaskCard(String name, String duration,
-                             String date, String priority) {
+                             String date, String priority,
+                             String startTime, String endTime,
+                             int position) {
 
-        TextView taskCard = new TextView(this);
+        // Main Card
+        LinearLayout card = new LinearLayout(this);
+        card.setOrientation(LinearLayout.HORIZONTAL);
+        card.setGravity(Gravity.CENTER_VERTICAL);
+        card.setPadding(dp(16), dp(16), dp(16), dp(16));
 
-        taskCard.setText(
-                "Task: " + name +
-                        "\nDuration: " + duration + " hours" +
-                        "\nDue Date: " + date +
-                        "\nPriority: " + priority
+        int[] colors = {
+                Color.parseColor("#EAF0FC"),
+                Color.parseColor("#E8F8F5"),
+                Color.parseColor("#FFF6DF"),
+                Color.parseColor("#F7EDFC")
+        };
+
+        card.setBackground(createBackground(
+                colors[position % colors.length], 25));
+
+        // Icon Box
+        TextView icon = new TextView(this);
+        icon.setText("▤");
+        icon.setTextSize(25);
+        icon.setTextColor(Color.parseColor("#17365D"));
+        icon.setGravity(Gravity.CENTER);
+
+        icon.setBackground(createBackground(Color.WHITE, 18));
+
+        LinearLayout.LayoutParams iconParams =
+                new LinearLayout.LayoutParams(dp(52), dp(52));
+
+        iconParams.setMargins(0, 0, dp(14), 0);
+        card.addView(icon, iconParams);
+
+        // Task Information
+        LinearLayout information = new LinearLayout(this);
+        information.setOrientation(LinearLayout.VERTICAL);
+
+        TextView taskName = new TextView(this);
+        taskName.setText(name);
+        taskName.setTextSize(17);
+        taskName.setTextColor(Color.parseColor("#17365D"));
+        taskName.setTypeface(null, android.graphics.Typeface.BOLD);
+
+        TextView taskDetails = new TextView(this);
+        taskDetails.setText(
+                duration + " hours\n" +
+                        startTime + " - " + endTime + "\n" +
+                        date + "  |  " + priority
         );
 
-        taskCard.setTextSize(16);
-        taskCard.setTextColor(0xFFFFFFFF);
-        taskCard.setPadding(24, 24, 24, 24);
+        taskDetails.setTextSize(13);
+        taskDetails.setTextColor(Color.parseColor("#667085"));
 
-        taskCard.setBackgroundResource(R.drawable.subjectcard);
+        information.addView(taskName);
+        information.addView(taskDetails);
 
-        LinearLayout.LayoutParams params =
+        LinearLayout.LayoutParams infoParams =
+                new LinearLayout.LayoutParams(
+                        0,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        1
+                );
+
+        card.addView(information, infoParams);
+
+        // Done Button
+        Button doneButton = new Button(this);
+        doneButton.setText("Done");
+        doneButton.setTextSize(13);
+        doneButton.setAllCaps(false);
+        doneButton.setTextColor(Color.parseColor("#17365D"));
+        doneButton.setPadding(dp(8), 0, dp(8), 0);
+
+        doneButton.setBackground(createBackground(Color.WHITE, 30));
+
+        LinearLayout.LayoutParams doneParams =
+                new LinearLayout.LayoutParams(
+                        dp(75),
+                        dp(45)
+                );
+
+        doneParams.setMargins(dp(8), 0, 0, 0);
+
+        card.addView(doneButton, doneParams);
+
+        // Card Margins
+        LinearLayout.LayoutParams cardParams =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 );
 
-        params.setMargins(0, 0, 0, 16);
+        cardParams.setMargins(0, 0, 0, dp(12));
 
-        taskCard.setLayoutParams(params);
+        card.setLayoutParams(cardParams);
 
-        tasksContainer.addView(taskCard);
+        tasksContainer.addView(card);
+
+        // Remove Task When Done
+        doneButton.setOnClickListener(v -> {
+            removeTask(position);
+        });
+    }
+
+    private void removeTask(int position) {
+
+        try {
+            JSONArray tasks = new JSONArray(
+                    Preferences.getString("tasks", "[]")
+            );
+
+            if (position >= 0 && position < tasks.length()) {
+
+                tasks.remove(position);
+
+                Preferences.edit()
+                        .putString("tasks", tasks.toString())
+                        .apply();
+
+                loadTasks();
+
+                Toast.makeText(this, "Task Completed!",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadTasks() {
@@ -223,6 +384,8 @@ public class MyTasks extends AppCompatActivity {
             String saved = Preferences.getString("tasks", "[]");
 
             JSONArray tasks = new JSONArray(saved);
+
+            tasksContainer.removeAllViews();
 
             for (int i = 0; i < tasks.length(); i++) {
 
@@ -233,11 +396,40 @@ public class MyTasks extends AppCompatActivity {
                 String date = task.getString("date");
                 String priority = task.getString("priority");
 
-                addTaskCard(name, duration, date, priority);
+                String startTime = task.optString(
+                        "startTime", "Not set");
+
+                String endTime = task.optString(
+                        "endTime", "Not set");
+
+                addTaskCard(
+                        name,
+                        duration,
+                        date,
+                        priority,
+                        startTime,
+                        endTime,
+                        i
+                );
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private GradientDrawable createBackground(int color, int radius) {
+
+        GradientDrawable background = new GradientDrawable();
+
+        background.setColor(color);
+        background.setCornerRadius(dp(radius));
+
+        return background;
+    }
+
+    private int dp(int value) {
+        return (int) (value * getResources()
+                .getDisplayMetrics().density);
     }
 }
