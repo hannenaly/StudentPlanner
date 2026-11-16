@@ -243,6 +243,11 @@ public class MyTasks extends AppCompatActivity {
             );
 
             loadTasks();
+            scheduleReminder(
+                    "Test Notification",
+                    System.currentTimeMillis() + 60 * 1000L,
+                    0
+            );
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -454,7 +459,6 @@ public class MyTasks extends AppCompatActivity {
                 .getDisplayMetrics().density);
     }
     private void scheduleReminder(String taskName, long dueDateMillis, int reminderOption) {
-
         long reminderTime = dueDateMillis;
 
         switch (reminderOption) {
