@@ -9,7 +9,6 @@
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <!-- Main Screen -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
@@ -28,7 +27,6 @@
                 android:padding="20dp"
                 android:background="#F7F8FC">
 
-                <!-- Menu Button -->
                 <TextView
                     android:id="@+id/btnOpenDrawer"
                     android:layout_width="48dp"
@@ -40,7 +38,6 @@
                     android:clickable="true"
                     android:focusable="true" />
 
-                <!-- Logo -->
                 <ImageView
                     android:id="@+id/imageView3"
                     android:layout_width="100dp"
@@ -71,7 +68,6 @@
                     android:textColor="#667085"
                     android:textSize="14sp" />
 
-                <!-- Greeting -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -89,7 +85,6 @@
                     android:textColor="#667085"
                     android:textSize="14sp" />
 
-                <!-- Today's Overview -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -187,7 +182,6 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
-                <!-- Main Sections -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -198,7 +192,6 @@
                     android:textSize="17sp"
                     android:textStyle="bold" />
 
-                <!-- First Row -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -241,7 +234,6 @@
                         app:iconTint="@color/white" />
                 </LinearLayout>
 
-                <!-- Second Row -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -267,12 +259,12 @@
                         app:iconTint="@color/white" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/DailyPlanner"
+                        android:id="@+id/StudyHub"
                         android:layout_width="0dp"
                         android:layout_height="110dp"
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
-                        android:text="Daily Planner"
+                        android:text="Study Hub"
                         android:textColor="@color/white"
                         android:textSize="14sp"
                         android:textStyle="bold"
@@ -372,7 +364,7 @@
                         android:layout_margin="4dp"
                         android:background="#EAF0FC"
                         android:gravity="center"
-                        android:text="🏠\nHome"
+                        android:text="🏠&#10;Home"
                         android:textColor="#17365D"
                         android:textStyle="bold"
                         android:textSize="14sp"
@@ -387,7 +379,7 @@
                         android:layout_margin="4dp"
                         android:background="#EAF0FC"
                         android:gravity="center"
-                        android:text="📚\nMy Subjects"
+                        android:text="📚&#10;My Subjects"
                         android:textColor="#17365D"
                         android:textStyle="bold"
                         android:textSize="14sp"
@@ -402,7 +394,7 @@
                         android:layout_margin="4dp"
                         android:background="#E8F8F5"
                         android:gravity="center"
-                        android:text="📋\nMy Tasks"
+                        android:text="📋&#10;My Tasks"
                         android:textColor="#17365D"
                         android:textStyle="bold"
                         android:textSize="14sp"
@@ -423,7 +415,7 @@
                         android:layout_margin="4dp"
                         android:background="#FCE8ED"
                         android:gravity="center"
-                        android:text="📝\nExams"
+                        android:text="📝&#10;Exams"
                         android:textColor="#17365D"
                         android:textStyle="bold"
                         android:textSize="14sp"
@@ -431,19 +423,19 @@
                         android:focusable="true"/>
 
                     <TextView
-                        android:id="@+id/navDaily"
+                        android:id="@+id/navStudyHub"
                         android:layout_width="0dp"
                         android:layout_height="100dp"
-                        android:layout_weight="1"
                         android:layout_margin="4dp"
+                        android:layout_weight="1"
                         android:background="#F0EAFE"
-                        android:gravity="center"
-                        android:text="📅\nDaily Planner"
-                        android:textColor="#17365D"
-                        android:textStyle="bold"
-                        android:textSize="14sp"
                         android:clickable="true"
-                        android:focusable="true"/>
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:text="📅&#10;Study Hub"
+                        android:textColor="#17365D"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/navGPA"
@@ -453,7 +445,7 @@
                         android:layout_margin="4dp"
                         android:background="#EAF0FC"
                         android:gravity="center"
-                        android:text="🎓\nGPA Calculator"
+                        android:text="🎓&#10;GPA Calculator"
                         android:textColor="#17365D"
                         android:textStyle="bold"
                         android:textSize="13sp"
@@ -486,10 +478,25 @@
                         android:layout_margin="4dp"
                         android:background="#FFF0D6"
                         android:gravity="center"
-                        android:text="⏱️\nStudy Timer"
+                        android:text="⏱️&#10;Study Timer"
                         android:textColor="#17365D"
                         android:textStyle="bold"
                         android:textSize="14sp"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                    <TextView
+                        android:id="@+id/navStatistics"
+                        android:layout_width="0dp"
+                        android:layout_height="100dp"
+                        android:layout_weight="1"
+                        android:layout_margin="4dp"
+                        android:background="#EAF0FC"
+                        android:gravity="center"
+                        android:text="📈&#10;Study Statistics"
+                        android:textColor="#17365D"
+                        android:textStyle="bold"
+                        android:textSize="13sp"
                         android:clickable="true"
                         android:focusable="true"/>
 
@@ -501,12 +508,18 @@
                         android:layout_margin="4dp"
                         android:background="#DDF5F3"
                         android:gravity="center"
-                        android:text="📊\nStudy Progress"
+                        android:text="📊&#10;Study Progress"
                         android:textColor="#17365D"
                         android:textStyle="bold"
                         android:textSize="13sp"
                         android:clickable="true"
                         android:focusable="true"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/navNotes"
@@ -516,7 +529,7 @@
                         android:layout_margin="4dp"
                         android:background="#F0EAFE"
                         android:gravity="center"
-                        android:text="📝\nQuick Notes"
+                        android:text="📝&#10;Quick Notes"
                         android:textColor="#17365D"
                         android:textStyle="bold"
                         android:textSize="14sp"
@@ -549,7 +562,7 @@
                         android:layout_margin="4dp"
                         android:background="#EAF0FC"
                         android:gravity="center"
-                        android:text="ℹ️\nAbout App"
+                        android:text="ℹ️&#10;About App"
                         android:textColor="#17365D"
                         android:textStyle="bold"
                         android:textSize="14sp"
@@ -564,7 +577,7 @@
                         android:layout_margin="4dp"
                         android:background="#E5EAF2"
                         android:gravity="center"
-                        android:text="⚙️\nSettings"
+                        android:text="⚙️&#10;Settings"
                         android:textColor="#17365D"
                         android:textStyle="bold"
                         android:textSize="14sp"
@@ -584,7 +597,6 @@
 
             </LinearLayout>
         </ScrollView>
-
     </LinearLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>

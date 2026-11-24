@@ -1,5 +1,7 @@
 
 
+
+
 package com.example.studentplanner;
 
 import android.content.Intent;
@@ -8,7 +10,6 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -18,14 +19,15 @@ import org.json.JSONException;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button MyTasks, MySubjects, Exams, DailyPlanner;
+    Button MyTasks, MySubjects, Exams, StudyHub;
     TextView tvTasksCount, tvSubjectsCount;
 
     DrawerLayout drawerLayout;
 
     TextView btnOpenDrawer;
     TextView navHome, navSubjects, navTasks;
-    TextView navExams, navDaily, navAbout;
+    TextView navExams, navStudyHub, navAbout, navTimer;
+    TextView navStatistics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         MyTasks = findViewById(R.id.MyTasks);
         MySubjects = findViewById(R.id.MySubjects);
         Exams = findViewById(R.id.Exams);
-        DailyPlanner = findViewById(R.id.DailyPlanner);
+        StudyHub = findViewById(R.id.StudyHub);
 
         tvTasksCount = findViewById(R.id.tvTasksCount);
         tvSubjectsCount = findViewById(R.id.tvSubjectsCount);
@@ -48,59 +50,58 @@ public class MainActivity extends AppCompatActivity {
         navSubjects = findViewById(R.id.navSubjects);
         navTasks = findViewById(R.id.navTasks);
         navExams = findViewById(R.id.navExams);
-        navDaily = findViewById(R.id.navDaily);
+        navStudyHub = findViewById(R.id.navStudyHub);
         navAbout = findViewById(R.id.navAbout);
-
+        navTimer = findViewById(R.id.navTimer);
+        navStatistics = findViewById(R.id.navStatistics);
 
         btnOpenDrawer.setOnClickListener(v -> {
             drawerLayout.openDrawer(findViewById(R.id.navigationDrawer));
         });
 
-
         MyTasks.setOnClickListener(v -> openTasks());
 
-
         MySubjects.setOnClickListener(v -> openSubjects());
-
 
         Exams.setOnClickListener(v ->
                 Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
         );
 
-
-        DailyPlanner.setOnClickListener(v ->
-                Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
-        );
-
+        StudyHub.setOnClickListener(v -> openStudyHub(false));
 
         navHome.setOnClickListener(v -> {
             drawerLayout.closeDrawers();
         });
-
 
         navSubjects.setOnClickListener(v -> {
             drawerLayout.closeDrawers();
             openSubjects();
         });
 
-
         navTasks.setOnClickListener(v -> {
             drawerLayout.closeDrawers();
             openTasks();
         });
-
 
         navExams.setOnClickListener(v -> {
             drawerLayout.closeDrawers();
             Toast.makeText(this, "Exams - Coming Soon", Toast.LENGTH_SHORT).show();
         });
 
-
-        navDaily.setOnClickListener(v -> {
+        navStudyHub.setOnClickListener(v -> {
             drawerLayout.closeDrawers();
-            Toast.makeText(this, "Daily Planner - Coming Soon", Toast.LENGTH_SHORT).show();
+            openStudyHub(false);
         });
 
+        navTimer.setOnClickListener(v -> {
+            drawerLayout.closeDrawers();
+            openStudyHub(true);
+        });
+
+        navStatistics.setOnClickListener(v -> {
+            drawerLayout.closeDrawers();
+            openStatistics();
+        });
 
         navAbout.setOnClickListener(v -> {
             drawerLayout.closeDrawers();
@@ -115,6 +116,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void openSubjects() {
         Intent intent = new Intent(MainActivity.this, MySubjects.class);
+        startActivity(intent);
+    }
+
+    private void openStudyHub(boolean openTimer) {
+        Intent intent = new Intent(MainActivity.this, StudyHub.class);
+        intent.putExtra("open_timer", openTimer);
+        startActivity(intent);
+    }
+
+    private void openStatistics() {
+        Intent intent = new Intent(MainActivity.this, StudyStatistics.class);
         startActivity(intent);
     }
 

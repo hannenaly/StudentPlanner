@@ -43,11 +43,20 @@
             android:name=".AddNewTask"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+
         <receiver
             android:name=".TaskReminderreceiver"
             android:enabled="true"
             android:exported="false" />
 
+        <activity
+            android:name=".StudyHub"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".StudyStatistics"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
