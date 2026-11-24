@@ -149,7 +149,6 @@ public class MySubjects extends AppCompatActivity {
         cardParams.setMargins(0, 0, 0, dp(14));
         card.setLayoutParams(cardParams);
 
-        // Subject icon
 
         TextView icon = new TextView(this);
         icon.setText("📚");
@@ -170,7 +169,7 @@ public class MySubjects extends AppCompatActivity {
 
         card.addView(icon);
 
-        // Subject information
+
 
         LinearLayout details = new LinearLayout(this);
         details.setOrientation(LinearLayout.VERTICAL);
@@ -242,7 +241,7 @@ public class MySubjects extends AppCompatActivity {
 
         card.addView(details);
 
-        // Open Subject Details
+
 
         card.setOnClickListener(v -> {
 

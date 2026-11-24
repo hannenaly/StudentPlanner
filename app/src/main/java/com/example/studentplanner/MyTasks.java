@@ -243,7 +243,7 @@ public class MyTasks extends AppCompatActivity {
             );
 
             loadTasks();
-            //test(3ashan el dr)
+
             scheduleReminder(
                     "Test Notification",
                     System.currentTimeMillis() + 60 * 1000L,
@@ -277,7 +277,7 @@ public class MyTasks extends AppCompatActivity {
                              String startTime, String endTime,
                              int position) {
 
-        // Main Card
+
         LinearLayout card = new LinearLayout(this);
         card.setOrientation(LinearLayout.HORIZONTAL);
         card.setGravity(Gravity.CENTER_VERTICAL);
@@ -293,7 +293,7 @@ public class MyTasks extends AppCompatActivity {
         card.setBackground(createBackground(
                 colors[position % colors.length], 25));
 
-        // Icon Box
+
         TextView icon = new TextView(this);
         icon.setText("▤");
         icon.setTextSize(25);
@@ -308,7 +308,6 @@ public class MyTasks extends AppCompatActivity {
         iconParams.setMargins(0, 0, dp(14), 0);
         card.addView(icon, iconParams);
 
-        // Task Information
         LinearLayout information = new LinearLayout(this);
         information.setOrientation(LinearLayout.VERTICAL);
 
@@ -360,7 +359,7 @@ public class MyTasks extends AppCompatActivity {
 
         card.addView(doneButton, doneParams);
 
-        // Card Margins
+
         LinearLayout.LayoutParams cardParams =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,

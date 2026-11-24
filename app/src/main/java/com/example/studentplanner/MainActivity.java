@@ -51,57 +51,57 @@ public class MainActivity extends AppCompatActivity {
         navDaily = findViewById(R.id.navDaily);
         navAbout = findViewById(R.id.navAbout);
 
-        // Open Drawer
+
         btnOpenDrawer.setOnClickListener(v -> {
             drawerLayout.openDrawer(findViewById(R.id.navigationDrawer));
         });
 
-        // My Tasks Button
+
         MyTasks.setOnClickListener(v -> openTasks());
 
-        // My Subjects Button
+
         MySubjects.setOnClickListener(v -> openSubjects());
 
-        // Exams Button
+
         Exams.setOnClickListener(v ->
                 Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
         );
 
-        // Daily Planner Button
+
         DailyPlanner.setOnClickListener(v ->
                 Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show()
         );
 
-        // Drawer Home
+
         navHome.setOnClickListener(v -> {
             drawerLayout.closeDrawers();
         });
 
-        // Drawer Subjects
+
         navSubjects.setOnClickListener(v -> {
             drawerLayout.closeDrawers();
             openSubjects();
         });
 
-        // Drawer Tasks
+
         navTasks.setOnClickListener(v -> {
             drawerLayout.closeDrawers();
             openTasks();
         });
 
-        // Drawer Exams
+
         navExams.setOnClickListener(v -> {
             drawerLayout.closeDrawers();
             Toast.makeText(this, "Exams - Coming Soon", Toast.LENGTH_SHORT).show();
         });
 
-        // Drawer Daily Planner
+
         navDaily.setOnClickListener(v -> {
             drawerLayout.closeDrawers();
             Toast.makeText(this, "Daily Planner - Coming Soon", Toast.LENGTH_SHORT).show();
         });
 
-        // Drawer About
+
         navAbout.setOnClickListener(v -> {
             drawerLayout.closeDrawers();
             Toast.makeText(this, "Student Planner App", Toast.LENGTH_SHORT).show();
